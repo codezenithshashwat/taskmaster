@@ -5,8 +5,11 @@ import com.example.taskmaster.entity.Task;
 import com.example.taskmaster.exception.ResourceNotFoundException;
 import com.example.taskmaster.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
+//import org.hibernate.query.Page;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.*;
-
+import org.springframework.data.domain.Pageable;
+//import java.awt.print.Pageable;
 import java.util.List;
 
 @Service
@@ -23,8 +26,11 @@ public class TaskService {
         return taskRepository.save(newTask);
     }
 
-    public List<Task> getAllTasks(){
-        return taskRepository.findAll();
+//    public List<Task> getAllTasks(){
+//        return taskRepository.findAll();
+//    }
+    public Page<Task> getAllTasks(Pageable pageable){
+        return taskRepository.findAll(pageable);
     }
 
     public Task getTaskById(Long id){

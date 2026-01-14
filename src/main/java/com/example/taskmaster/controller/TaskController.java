@@ -6,10 +6,14 @@ import com.example.taskmaster.entity.Task;
 import com.example.taskmaster.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+//import org.hibernate.query.Page;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+//import java.awt.print.Pageable;
 import java.util.List;
 
 @RestController
@@ -25,8 +29,9 @@ public class TaskController {
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
     @GetMapping
-    public ResponseEntity<List<Task>> getAllTasks() {
-        return ResponseEntity.ok(taskService.getAllTasks());
+    public ResponseEntity<Page<Task>> getAllTasks(@PageableDefault(size=5, sort="createdAt") Pageable pageable) {
+        Page<Task> tasks= taskService.getAllTasks(pageable);
+        return ResponseEntity.ok(tasks);
     }
 
     @GetMapping("/{id}")
