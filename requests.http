@@ -9,7 +9,14 @@ Content-Type: application/json
 }
 
 
+### 6. Search for tasks containing "Dummy" (Should return 20 items)
+GET http://localhost:8080/api/v1/tasks/search?keyword=Dummy
 
+### 7. Search for tasks containing "5" (Should return Task 5 and Task 15)
+GET http://localhost:8080/api/v1/tasks/search?keyword=5
+
+### 8. Search for something that doesn't exist (Should return empty list)
+GET http://localhost:8080/api/v1/tasks/search?query=Pizza
 
 ### 2. Get All Tasks (GET)
 GET http://localhost:8080/api/v1/tasks/2

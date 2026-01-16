@@ -34,7 +34,7 @@ public class TaskController {
         return ResponseEntity.ok(tasks);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") // id is path variable
     public ResponseEntity<Task> getTaskById(@PathVariable Long id){
         Task task= taskService.getTaskById(id);
         return ResponseEntity.ok(task);
@@ -52,5 +52,11 @@ public class TaskController {
     public ResponseEntity<Task> updateTask(@PathVariable Long id, @Valid @RequestBody TaskRequest request) {
         Task updatedTask= taskService.updateTask(id, request);
         return ResponseEntity.ok(updatedTask);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<Task>> searchTasks(@RequestParam String keyword, @PageableDefault(size=5, sort="id") Pageable pageable) {
+       Page<Task> tasks= taskService.searchTasks(keyword, pageable);
+        return ResponseEntity.ok(tasks);
     }
 }

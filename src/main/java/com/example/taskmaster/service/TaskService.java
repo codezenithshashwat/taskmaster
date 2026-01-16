@@ -30,6 +30,7 @@ public class TaskService {
 //        return taskRepository.findAll();
 //    }
     public Page<Task> getAllTasks(Pageable pageable){
+
         return taskRepository.findAll(pageable);
     }
 
@@ -53,5 +54,9 @@ public class TaskService {
         existingTask.setDueDate(request.dueDate());
 
         return taskRepository.save(existingTask);
+    }
+
+    public Page<Task> searchTasks(String keyword, Pageable pageable){
+        return taskRepository.findByTitleContainingIgnoreCase(keyword, pageable);
     }
 }
