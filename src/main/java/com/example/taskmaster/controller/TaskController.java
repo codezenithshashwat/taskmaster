@@ -19,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/tasks")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200") //this will allow to talk to the frontend and enable CORS
 public class TaskController {
     private final TaskService taskService;
 
