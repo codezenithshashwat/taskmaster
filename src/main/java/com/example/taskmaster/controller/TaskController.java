@@ -49,10 +49,13 @@ public class TaskController {
     }
 
 
-    @PutMapping
-    public ResponseEntity<Task> updateTask(@PathVariable Long id, @Valid @RequestBody TaskRequest request) {
-        Task updatedTask= taskService.updateTask(id, request);
-        return ResponseEntity.ok(updatedTask);
+    // 1. MUST have "/{id}" in the mapping
+    @PutMapping("/{id}")
+    public Task updateTask(
+            @PathVariable Long id,           // 2. MUST have @PathVariable
+            @RequestBody TaskRequest request // 3. MUST have @RequestBody
+    ) {
+        return taskService.updateTask(id, request);
     }
 
     @GetMapping("/search")

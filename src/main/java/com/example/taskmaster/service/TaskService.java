@@ -47,11 +47,14 @@ public class TaskService {
     }
 
     public Task updateTask(Long id, TaskRequest request){
-        Task existingTask= getTaskById(id);
+        Task existingTask = getTaskById(id);
 
         existingTask.setTitle(request.title());
         existingTask.setDescription(request.description());
         existingTask.setDueDate(request.dueDate());
+
+        // 👇 ADD THIS MISSING LINE 👇
+        existingTask.setCompleted(request.completed());
 
         return taskRepository.save(existingTask);
     }
