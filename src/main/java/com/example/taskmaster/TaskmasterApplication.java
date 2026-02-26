@@ -13,19 +13,19 @@ public class TaskmasterApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TaskmasterApplication.class, args);
 	}
-    @Bean
-	public CommandLineRunner dataLoader (TaskRepository repository){
-		return args -> {
-			if(repository.count()==0){
-				for(int i=0;i<20;i++){
-					Task task= Task.builder()
-							.title("Dummy task "+ i)
-							.description("Generated automatically")
-							.build();
-					repository.save(task);
-				}
-				System.out.println("Generated 20 tasks!");
-			}
-		};
-	}
+//    @Bean
+//	public CommandLineRunner dataLoader (TaskRepository repository){
+//		return args -> {
+//			if(repository.count()==0){
+//				for(int i=0;i<20;i++){
+//					Task task= Task.builder()
+//							.title("Dummy task "+ i)
+//							.description("Generated automatically")
+//							.build();
+//					repository.save(task);
+//				}
+//				System.out.println("Generated 20 tasks!");
+//			}
+//		};
+//	}
 }
