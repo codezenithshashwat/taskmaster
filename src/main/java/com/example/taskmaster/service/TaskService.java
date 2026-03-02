@@ -75,8 +75,9 @@ public class TaskService {
         }
         if (request.completed()) {
             existingTask.setStatus(TaskStatus.COMPLETED);
+        } else {
+            existingTask.updateOverdueStatus();
         }
-        existingTask.updateOverdueStatus();
 
         return taskRepository.save(existingTask);
     }
