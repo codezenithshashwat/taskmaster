@@ -4,64 +4,65 @@ This directory contains the **complete updated Angular source files** for the
 [taskmaster-frontend](https://github.com/codezenithshashwat/taskmaster-frontend) repository,
 supporting the new backend features: **JWT authentication**, **task priority**, **task status tracking**, and **due dates**.
 
-> **Why is this here?** Copilot can only push to the repo it's working on (`taskmaster` backend).
-> These files need to be applied to the separate `taskmaster-frontend` repo. Follow the steps below.
+---
+
+## 🚀 Automated Sync (GitHub Actions)
+
+A GitHub Actions workflow (`.github/workflows/sync-frontend.yml`) is configured to **automatically sync** these frontend files to the `taskmaster-frontend` repo whenever changes are pushed to `main`.
+
+### One-Time Setup (Required)
+
+1. **Create a Personal Access Token (PAT):**
+   - Go to [GitHub Settings → Developer settings → Personal access tokens → Fine-grained tokens](https://github.com/settings/tokens?type=beta)
+   - Click **"Generate new token"**
+   - Name: `frontend-sync`
+   - Repository access: Select **"Only select repositories"** → choose `taskmaster-frontend`
+   - Permissions → Repository permissions → **Contents**: Read and write
+   - Click **"Generate token"** and copy the token
+
+2. **Add the token as a repository secret:**
+   - Go to [taskmaster repo Settings → Secrets and variables → Actions](https://github.com/codezenithshashwat/taskmaster/settings/secrets/actions)
+   - Click **"New repository secret"**
+   - Name: `FRONTEND_SYNC_TOKEN`
+   - Value: paste the token from step 1
+   - Click **"Add secret"**
+
+3. **Trigger the initial sync:**
+   - Go to [Actions → Sync Frontend to taskmaster-frontend](https://github.com/codezenithshashwat/taskmaster/actions/workflows/sync-frontend.yml)
+   - Click **"Run workflow"** → **"Run workflow"**
+   - This pushes all frontend files to `taskmaster-frontend`, and Vercel auto-deploys
+
+After this one-time setup, any future changes to `frontend/src/` will automatically sync to the frontend repo on push to `main`.
+
+### ⚠️ Important: Set CORS_ALLOWED_ORIGINS on Render
+
+In your **Render dashboard**, set the environment variable:
+```
+CORS_ALLOWED_ORIGINS=https://your-app.vercel.app
+```
+Replace `https://your-app.vercel.app` with your actual Vercel frontend URL. This allows the frontend to make API calls to the backend.
 
 ---
 
-## 🚀 How to Apply These Changes (Step-by-Step)
+## 🔧 Manual Sync (Alternative)
 
-### Option A: Automated Script (Recommended)
-
-**Prerequisites:** Git and a terminal (macOS/Linux/WSL).
+If you prefer to sync manually instead of using GitHub Actions:
 
 ```bash
-# Step 1: Clone both repos side by side (skip if already cloned)
+# Clone both repos side by side (skip if already cloned)
 git clone https://github.com/codezenithshashwat/taskmaster.git
 git clone https://github.com/codezenithshashwat/taskmaster-frontend.git
 
-# Step 2: Switch to the backend branch that has the frontend files
+# Run the automation script
 cd taskmaster
-git checkout copilot/enhance-taskmaster-features
-
-# Step 3: Run the automation script
 chmod +x frontend/apply-to-frontend-repo.sh
 ./frontend/apply-to-frontend-repo.sh ../taskmaster-frontend
 
-# Step 4: Go to the frontend repo, build, test, and push
+# Build, test, and push
 cd ../taskmaster-frontend
 npm install
 npm run build
-npm start          # Opens http://localhost:4200 — verify login/register/tasks work
-git add -A
-git commit -m "Add JWT auth, priority system, status tracking, due dates"
-git push origin main
-```
-
-### Option B: Manual Copy (Windows or if script doesn't work)
-
-```bash
-# Step 1: Clone both repos (skip if already cloned)
-git clone https://github.com/codezenithshashwat/taskmaster.git
-git clone https://github.com/codezenithshashwat/taskmaster-frontend.git
-
-# Step 2: Switch to the backend branch with frontend files
-cd taskmaster
-git checkout copilot/enhance-taskmaster-features
-
-# Step 3: Copy the entire src/ folder over to the frontend repo
-# On macOS/Linux:
-cp -r frontend/src/* ../taskmaster-frontend/src/
-
-# On Windows (PowerShell):
-# Copy-Item -Recurse -Force frontend\src\* ..\taskmaster-frontend\src\
-
-# Step 4: Go to frontend repo, install, build, test, push
-cd ../taskmaster-frontend
-npm install
-npm run build
-npm start
-# Verify at http://localhost:4200 that login page appears
+npm start          # Verify at http://localhost:4200 that login page appears
 git add -A
 git commit -m "Add JWT auth, priority system, status tracking, due dates"
 git push origin main
@@ -69,26 +70,14 @@ git push origin main
 
 ---
 
-## 📦 Will Changes Auto-Deploy?
+## 📦 Deployment Flow
 
-### Frontend (Vercel) — ✅ YES, automatically
-Your `taskmaster-frontend` is deployed on **Vercel**. Once you `git push` to the `main` branch:
-- Vercel detects the push automatically
-- Runs `npm run build` (production build with `environment.prod.ts`)
-- Deploys the new version within 1-2 minutes
-- **No manual action needed** — just push and wait
+### Frontend (Vercel) — ✅ Auto-deploys on push to `taskmaster-frontend`
+- Vercel detects the push → runs `ng build --configuration production` → deploys
+- Production build uses `environment.prod.ts` (points to Render backend URL)
 
-### Backend (Render) — ✅ YES, automatically (after merging this PR)
-Your `taskmaster` backend is deployed on **Render**. Once this PR is merged to `main`:
-- Render detects the push and auto-builds using the `Dockerfile`
-- Deploys the new backend with JWT auth, priority, and status endpoints
-- **No manual action needed** — just merge the PR
-
-### ⚠️ Important: Deploy Backend FIRST
-1. **First:** Merge this PR (backend) → Render auto-deploys the backend with auth endpoints
-2. **Then:** Push the frontend changes → Vercel auto-deploys the frontend with login/register
-
-If you deploy the frontend first, users will see a login page but the auth endpoints won't exist yet.
+### Backend (Render) — ✅ Auto-deploys on push to `taskmaster` main
+- Render detects the push → builds using `Dockerfile` → deploys
 
 ---
 
