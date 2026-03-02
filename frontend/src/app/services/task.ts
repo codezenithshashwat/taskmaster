@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+
+export type Priority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+export type TaskStatusType = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'OVERDUE';
 
 export interface Task {
   id: number;
   title: string;
   description: string;
   completed: boolean;
-  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'OVERDUE';
+  priority: Priority;
+  status: TaskStatusType;
   dueDate: string | null;
   createdAt: string;
 }
@@ -48,14 +51,15 @@ export class TaskService {
   }
 
   searchTasks(keyword: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/search?keyword=${keyword}`);
+    const params = new HttpParams().set('keyword', keyword);
+    return this.http.get(`${this.apiUrl}/search`, { params });
   }
 
-  getTasksByStatus(status: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/status/${status}`);
+  getTasksByStatus(status: TaskStatusType): Observable<any> {
+    return this.http.get(`${this.apiUrl}/status/${encodeURIComponent(status)}`);
   }
 
-  getTasksByPriority(priority: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/priority/${priority}`);
+  getTasksByPriority(priority: Priority): Observable<any> {
+    return this.http.get(`${this.apiUrl}/priority/${encodeURIComponent(priority)}`);
   }
 }

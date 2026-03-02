@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TaskService, Task, TaskRequest } from '../../services/task';
+import { TaskService, Task, TaskRequest, Priority, TaskStatusType } from '../../services/task';
 
 @Component({
   selector: 'app-task-list',
@@ -51,7 +51,7 @@ export class TaskListComponent implements OnInit {
       completed: false,
       priority: this.newTaskPriority,
       status: 'PENDING',
-      dueDate: this.newTaskDueDate ? this.newTaskDueDate + ':00' : null,
+      dueDate: this.newTaskDueDate ? new Date(this.newTaskDueDate).toISOString().slice(0, 19) : null,
     };
 
     this.taskService.createTask(newTask).subscribe({
@@ -113,7 +113,7 @@ export class TaskListComponent implements OnInit {
       return;
     }
 
-    this.taskService.getTasksByStatus(status).subscribe({
+    this.taskService.getTasksByStatus(status as TaskStatusType).subscribe({
       next: (response) => {
         this.tasks = response.content ? response.content : response;
         this.cdr.detectChanges();
